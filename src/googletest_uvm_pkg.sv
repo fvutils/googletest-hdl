@@ -11,6 +11,9 @@
 package googletest_uvm_pkg;
 	import uvm_pkg::*;
 	
+	import "DPI-C" context function int _googletest_uvm_init();
+	int _init = _googletest_uvm_init();
+	
 	import "DPI-C" function void _googletest_uvm_set_test_filter(string filter);
 	
 	import "DPI-C" context task _googletest_uvm_main();

@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 static std::string		prv_filter;
-static void				*prv_scope;
+static void				*prv_scope = 0;
 
 #ifdef __cplusplus
 extern "C" {
@@ -85,8 +85,12 @@ public:
 
 		vsnprintf(m_buf, m_buf_len, fmt, ap);
 
+		fprintf(stdout, "--> svSetScope %p\n", prv_scope);
 		svSetScope(prv_scope);
+		fprintf(stdout, "<-- svSetScope %p\n", prv_scope);
+		fprintf(stdout, "--> googletest_uvm_report\n");
 		_googletest_uvm_report(m_buf, t);
+		fprintf(stdout, "<-- googletest_uvm_report\n");
 
 		va_end(ap);
 	}
@@ -105,6 +109,12 @@ private:
 
 }
 
+int _googletest_uvm_init(void) {
+	fprintf(stdout, "--> googletest_init\n");
+	prv_scope = svGetScope();
+	fprintf(stdout, "<-- googletest_init %p\n", prv_scope);
+}
+
 void _googletest_uvm_set_test_filter(const char *filter) {
 	prv_filter = filter;
 	::testing::GTEST_FLAG(filter) = prv_filter.c_str();
@@ -118,8 +128,6 @@ int _googletest_uvm_main(void) {
 	googletest_uvm::TestListener  *l = new googletest_uvm::TestListener();
 
 	fprintf(stdout, "googletest_uvm_main()\n");
-
-	prv_scope = svGetScope();
 
 	argv[0] = const_cast<char *>(arg0.c_str());
 
