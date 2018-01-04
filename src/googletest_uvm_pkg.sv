@@ -37,7 +37,15 @@ package googletest_uvm_pkg;
 		endcase
 	endfunction
 	export "DPI-C" function _googletest_uvm_report;
-	
+
+	/**
+	 * Task: run_all_tests
+	 * 
+	 * Task description needed
+	 * 
+	 * Parameters:
+	 * - string filter 
+	 */
 	task automatic run_all_tests(string filter="");
 		_googletest_uvm_set_test_filter(filter);
 		_googletest_uvm_main();
