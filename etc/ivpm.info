@@ -1,3 +1,3 @@
-name=googletest_uvm
+name=googletest-hdl
 version=0.0.1
-rootvar=GOOGLETEST_UVM
+rootvar=GOOGLETEST_HDL
