@@ -6,6 +6,8 @@
 #include <string>
 #include <stdarg.h>
 #include <stdio.h>
+#include "GoogletestHdlTestListener.h"
+#include "GoogletestHdlCmdlineProcessor.h"
 
 static std::string		prv_filter;
 static void				*prv_scope = 0;
@@ -109,10 +111,19 @@ private:
 
 }
 
+extern "C" int acc_fetch_argc(void);
+extern "C" char **acc_fetch_argv(void);
+
 int _googletest_uvm_init(void) {
 	fprintf(stdout, "--> googletest_init\n");
 	prv_scope = svGetScope();
+
+	// Fetch command-line arguments and initialize the CLP
+	GoogletestHdlCmdlineProcessor::init(
+			acc_fetch_argc(), acc_fetch_argv());
+
 	fprintf(stdout, "<-- googletest_init %p\n", prv_scope);
+	return 0;
 }
 
 void _googletest_uvm_set_test_filter(const char *filter) {
@@ -120,12 +131,12 @@ void _googletest_uvm_set_test_filter(const char *filter) {
 	::testing::GTEST_FLAG(filter) = prv_filter.c_str();
 }
 
+
 int _googletest_uvm_main(void) {
 	int argc=1;
 	std::string arg0 = "googletest_uvm";
 	char *argv[1];
 	int status;
-	googletest_uvm::TestListener  *l = new googletest_uvm::TestListener();
 
 	fprintf(stdout, "googletest_uvm_main()\n");
 
@@ -135,12 +146,19 @@ int _googletest_uvm_main(void) {
 
 	::testing::TestEventListeners &listeners =
 			::testing::UnitTest::GetInstance()->listeners();
-	listeners.Append(l);
+	listeners.Append(GoogletestHdlTestListener::inst());
+
+	std::string filter;
+	if (GoogletestHdlCmdlineProcessor::instance().get_plusarg_value(
+			"+gtest-filter", filter)) {
+		::testing::GTEST_FLAG(filter) = filter.c_str();
+	}
 
 	status = RUN_ALL_TESTS();
 
-	if (l->num_tests() == 0) {
-		l->msg(TYPE_FATAL, "No tests selected");
+	if (GoogletestHdlTestListener::inst()->num_tests() == 0) {
+		// TODO:
+//		l->msg(TYPE_FATAL, "No tests selected");
 	}
 
 	return 0;
