@@ -1,5 +1,5 @@
 /****************************************************************************
- * googletest_uvm.cpp
+ * googletest_sv.cpp
  ****************************************************************************/
 #include "gtest/gtest.h"
 #include <stdint.h>
@@ -8,8 +8,8 @@
 #include <stdio.h>
 
 #include "CmdlineProcessor.h"
-#include "GoogletestUvmEngine.h"
 #include "GoogletestHdl.h"
+#include "GoogletestSvEngine.h"
 
 static std::string		prv_filter;
 static void				*prv_scope = 0;
@@ -26,14 +26,17 @@ typedef enum {
 	TYPE_WARN,
 	TYPE_ERROR,
 	TYPE_FATAL
-} googletest_uvm_msg_t;
+} googletest_sv_msg_t;
 
-void _googletest_uvm_report(const char *msg, int t);
-int _googletest_uvm_run(void);
-int _googletest_uvm_raise_objection(void);
-int _googletest_uvm_drop_objection(void);
+void _googletest_sv_report(const char *msg, int t);
+int _googletest_sv_run(void);
+int _googletest_sv_raise_objection(void);
+int _googletest_sv_drop_objection(void);
+int _googletest_sv_num_tests(void);
+int _googletest_sv_num_passed(void);
+int _googletest_sv_num_failed(void);
 
-namespace googletest_uvm {
+namespace googletest_sv {
 
 class TestListener : public ::testing::EmptyTestEventListener {
 public:
@@ -95,9 +98,9 @@ public:
 		fprintf(stdout, "--> svSetScope %p\n", prv_scope);
 		svSetScope(prv_scope);
 		fprintf(stdout, "<-- svSetScope %p\n", prv_scope);
-		fprintf(stdout, "--> googletest_uvm_report\n");
-		_googletest_uvm_report(m_buf, t);
-		fprintf(stdout, "<-- googletest_uvm_report\n");
+		fprintf(stdout, "--> googletest_sv_report\n");
+		_googletest_sv_report(m_buf, t);
+		fprintf(stdout, "<-- googletest_sv_report\n");
 
 		va_end(ap);
 	}
@@ -119,7 +122,7 @@ private:
 extern "C" int acc_fetch_argc(void);
 extern "C" char **acc_fetch_argv(void);
 
-int _googletest_uvm_init(void) {
+int _googletest_sv_init(void) {
 	fprintf(stdout, "--> googletest_init\n");
 	prv_scope = svGetScope();
 
@@ -127,46 +130,50 @@ int _googletest_uvm_init(void) {
 	return 0;
 }
 
-void _googletest_uvm_set_test_filter(const char *filter) {
+void _googletest_sv_set_test_filter(const char *filter) {
 	prv_filter = filter;
 	::testing::GTEST_FLAG(filter) = prv_filter.c_str();
 }
 
-void googletest_uvm_run(double time_ns) {
+void googletest_sv_run(double time_ns) {
 	svSetScope(prv_scope);
-	if (!_googletest_uvm_run()) {
+	if (!_googletest_sv_run()) {
 		// TODO:
 	}
 }
 
-void googletest_uvm_raise_objection(void) {
+void googletest_sv_raise_objection(void) {
 	svSetScope(prv_scope);
-	if (_googletest_uvm_raise_objection()) {
+	if (_googletest_sv_raise_objection()) {
 		// TODO:
 	}
 }
 
-void googletest_uvm_drop_objection(void) {
+void googletest_sv_drop_objection(void) {
+	fprintf(stdout, "--> googletest_sv_drop_objection()\n");
+	fflush(stdout);
 	svSetScope(prv_scope);
-	if (_googletest_uvm_drop_objection()) {
+	if (_googletest_sv_drop_objection()) {
 		// TODO:
 	}
+	fprintf(stdout, "<-- googletest_sv_drop_objection()\n");
+	fflush(stdout);
 }
 
-int _googletest_uvm_main(void) {
+int _googletest_sv_main(void) {
 	int argc = acc_fetch_argc();
 	char **argv = acc_fetch_argv();
 	int status;
-	GoogletestUvmEngine		engine;
+	GoogletestSvEngine		*engine = new GoogletestSvEngine();
 
-	fprintf(stdout, "googletest_uvm_main()\n");
+	fprintf(stdout, "googletest_sv_main()\n");
 
 	testing::InitGoogleTest(&argc, argv);
 
 	GoogletestHdl::inst().init(
 			argc,
 			argv,
-			&engine);
+			engine);
 
 	std::string filter;
 	const CmdlineProcessor &clp = GoogletestHdl::inst().clp();
@@ -182,7 +189,20 @@ int _googletest_uvm_main(void) {
 //		l->msg(TYPE_FATAL, "No tests selected");
 	}
 
+	delete engine;
+
 	return 0;
+}
+
+int _googletest_sv_num_tests(void) {
+	return GoogletestHdl::inst().num_tests();
+}
+int _googletest_sv_num_passed(void) {
+	return GoogletestHdl::inst().num_passed();
+}
+
+int _googletest_sv_num_failed(void) {
+	return GoogletestHdl::inst().num_failed();
 }
 
 #ifdef __cplusplus

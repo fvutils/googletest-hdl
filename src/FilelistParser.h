@@ -11,6 +11,8 @@
 #include <vector>
 #include <stdio.h>
 
+namespace gtest_hdl {
+
 class FilelistParser {
 public:
 
@@ -50,5 +52,6 @@ private:
 	FILE						*m_fp;
 	int							m_unget_c;
 };
+}
 
 #endif /* INCLUDED_FILELIST_PARSER_H */

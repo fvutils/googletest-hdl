@@ -10,6 +10,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+using namespace gtest_hdl;
+
 bool FilelistParser::parse(
 		const std::string			&filelist,
 		const std::string			&cwd,

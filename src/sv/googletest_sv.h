@@ -1,39 +1,39 @@
 /****************************************************************************
- * googletest_uvm.h
+ * googletest_sv.h
  ****************************************************************************/
-#ifndef INCLUDED_GOOGLETEST_UVM_H
-#define INCLUDED_GOOGLETEST_UVM_H
+#ifndef INCLUDED_GOOGLETEST_SV_H
+#define INCLUDED_GOOGLETEST_SV_H
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /********************************************************************
- * googletest_uvm_argc()
+ * googletest_sv_argc()
  ********************************************************************/
-int googletest_uvm_argc(void);
+int googletest_sv_argc(void);
 
 /********************************************************************
- * googletest_uvm_argv()
+ * googletest_sv_argv()
  ********************************************************************/
-char **googletest_uvm_argv(void);
+char **googletest_sv_argv(void);
 
 /********************************************************************
- * googletest_uvm_run()
+ * googletest_sv_run()
  ********************************************************************/
-void googletest_uvm_run(double time_ns=-1);
+void googletest_sv_run(double time_ns=-1);
 
 /********************************************************************
- * googletest_uvm_raise_objection()
+ * googletest_sv_raise_objection()
  ********************************************************************/
-void googletest_uvm_raise_objection(void);
+void googletest_sv_raise_objection(void);
 
 /********************************************************************
- * googletest_uvm_drop_objection()
+ * googletest_sv_drop_objection()
  ********************************************************************/
-void googletest_uvm_drop_objection(void);
+void googletest_sv_drop_objection(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* INCLUDED_GOOGLETEST_UVM_H */
+#endif /* INCLUDED_GOOGLETEST_SV_H */

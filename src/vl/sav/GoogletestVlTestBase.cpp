@@ -25,16 +25,21 @@ void GoogletestVlTestBase::SetUp() {
 	m_timestamp = 0;
 	m_init = false;
 
-	::testing::UnitTest *test = ::testing::UnitTest::GetInstance();
-	fprintf(stdout, "testcases to run: %d\n", test->test_to_run_count());
-	fprintf(stdout, " current testcase: %s::%s\n",
-			test->current_test_case()->name(),
-			test->current_test_info()->name());
+//	::testing::UnitTest *test = ::testing::UnitTest::GetInstance();
+//	fprintf(stdout, "testcases to run: %d\n", test->test_to_run_count());
+//	fprintf(stdout, " current testcase: %s::%s\n",
+//			test->current_test_case()->name(),
+//			test->current_test_info()->name());
 }
 
 void GoogletestVlTestBase::run(double time_ns) {
 	double remaining = time_ns;
+
+	fprintf(stdout, "GoogletestVlTestBase::run\n");
+	fflush(stdout);
 	if (!m_init) {
+		fprintf(stdout, "m_clocks.size=%d\n", m_clocks.size());
+		fflush(stdout);
 		m_steplist.push_back(ClockStep(
 				m_clocks.at(0).first, 1, m_clocks.at(0).second/2));
 		m_steplist.push_back(ClockStep(
@@ -54,6 +59,7 @@ void GoogletestVlTestBase::run(double time_ns) {
 
 		m_timestamp += s.time_incr;
 
+		fprintf(stdout, "STEP\n");
 		if (time_ns >=0) {
 			remaining -= s.time_incr;
 
@@ -90,15 +96,15 @@ void GoogletestVlTestBase::addClock(CData &clk, double period) {
 	m_clocks.push_back(std::pair<CData *, uint64_t>(&clk, period));
 }
 
-std::string GoogletestVlTestBase::testname() const {
-	::testing::UnitTest *test = ::testing::UnitTest::GetInstance();
-	std::string ret = test->current_test_case()->name();
-
-	ret += ".";
-	ret += test->current_test_info()->name();
-
-	return ret;
-}
+//std::string GoogletestVlTestBase::testname() const {
+//	::testing::UnitTest *test = ::testing::UnitTest::GetInstance();
+//	std::string ret = test->current_test_case()->name();
+//
+//	ret += ".";
+//	ret += test->current_test_info()->name();
+//
+//	return ret;
+//}
 
 void GoogletestVlTestBase::raiseObjection(void *obj) {
 	std::map<void *, uint32_t>::iterator it;

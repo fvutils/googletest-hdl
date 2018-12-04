@@ -1,5 +1,5 @@
 /*
- * GoogletestHdlCmdlineProcessor.h
+ * CmdlineProcessor.h
  *
  *  Created on: Oct 25, 2018
  *      Author: ballance
@@ -10,12 +10,16 @@
 #include <vector>
 #include <string>
 
-class GoogletestHdlCmdlineProcessor {
+namespace gtest_hdl {
+class CmdlineProcessor {
 public:
+	CmdlineProcessor();
 
-	static void init(int argc, char **argv);
+	CmdlineProcessor(int argc, char **argv);
 
-	static const GoogletestHdlCmdlineProcessor &instance();
+	virtual ~CmdlineProcessor();
+
+	void init(int argc, char **argv);
 
 	const std::vector<std::string> &get_args() const { return m_args; }
 
@@ -32,14 +36,12 @@ public:
 
 protected:
 
-	GoogletestHdlCmdlineProcessor(int argc, char **argv);
 
-	virtual ~GoogletestHdlCmdlineProcessor();
 
 private:
-	std::vector<std::string>					m_args;
-	std::vector<std::string>					m_plusargs;
-	static GoogletestHdlCmdlineProcessor			*m_instance;
+	std::vector<std::string>			m_args;
+	std::vector<std::string>			m_plusargs;
 };
+}
 
 #endif /* INCLUDED_GOOGLETEST_HDL_CMDLINE_PROCESSOR */

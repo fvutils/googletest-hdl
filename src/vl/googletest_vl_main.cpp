@@ -8,13 +8,17 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
-#include "GoogletestHdlTestListener.h"
-#include "GoogletestHdlCmdlineProcessor.h"
+#include "GoogletestHdl.h"
+#include "GoogletestHdl.h"
+#include "GoogletestHdl.h"
+#include "GoogletestHdl.h"
+#include "GoogletestVlEngineRegistry.h"
 #include "FilelistParser.h"
 #include "verilated.h"
 #include "verilated_lxt2_c.h"
 #include "gtest/gtest.h"
 #include <unistd.h>
+#include "../CmdlineProcessor.h"
 
 int main(int argc, char **argv) {
 	bool trace = true;
@@ -36,9 +40,6 @@ int main(int argc, char **argv) {
 		}
 	}
 
-
-	// TODO: must expand out any filelists
-
 	if (trace) {
 		Verilated::traceEverOn(true);
 	}
@@ -52,29 +53,32 @@ int main(int argc, char **argv) {
 
 	::testing::InitGoogleTest(&new_argc, new_argv);
 
-	GoogletestHdlCmdlineProcessor::init(new_argc, new_argv);
+	Verilated::commandArgs(new_argc, new_argv);
+
+	GoogletestVlEngineFactoryBase *engine_f = GoogletestVlEngineRegistry::inst().get_default();
+	IEngine *engine = engine_f->create();
+
+	GoogletestHdl::init(new_argc, new_argv, engine);
+	const CmdlineProcessor &clp = GoogletestHdl::inst().clp();
 
 	std::string filter;
-	if (GoogletestHdlCmdlineProcessor::instance().get_plusarg_value("+gtest-filter", filter)) {
+	if (clp.get_plusarg_value("+gtest-filter", filter)) {
 		::testing::GTEST_FLAG(filter) = filter.c_str();
 	}
-
-    ::testing::TestEventListeners &listeners =
-                     ::testing::UnitTest::GetInstance()->listeners();
-     listeners.Append(GoogletestHdlTestListener::inst());
-
-	Verilated::commandArgs(argc, argv);
 
 	int ret = RUN_ALL_TESTS();
 
 	std::string testname = "UNSPECIFIED";
-	GoogletestHdlCmdlineProcessor::instance().get_plusarg_value("+TESTNAME", testname);
+	if (!clp.get_plusarg_value("+TESTNAME", testname)) {
+		fprintf(stdout, "Error: +TESTNAME not specified\n");
+	}
 
-	GoogletestHdlTestListener *listener = GoogletestHdlTestListener::inst();
-	if (listener->num_passed() && !listener->num_failed()) {
+	GoogletestHdl &inst = GoogletestHdl::inst();
+
+	if (inst.num_passed() && inst.num_failed() == 0) {
 		fprintf(stdout, "PASSED: %s\n", testname.c_str());
-	} else if (listener->num_failed()) {
-		fprintf(stdout, "FAILED: %s (%d errors)\n", testname.c_str(), listener->num_failed());
+	} else if (inst.num_failed()) {
+		fprintf(stdout, "FAILED: %s (%d errors)\n", testname.c_str(), inst.num_failed());
 	} else {
 		fprintf(stdout, "FAILED: %s (no tests run)\n", testname.c_str());
 	}

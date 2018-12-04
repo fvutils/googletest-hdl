@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "GoogletestHdlTestListener.h"
+#include "GoogletestHdl.h"
 
 GoogletestHdlTestListener::GoogletestHdlTestListener() {
 	m_num_tests = 0;
@@ -20,6 +21,7 @@ GoogletestHdlTestListener::~GoogletestHdlTestListener() {
 void GoogletestHdlTestListener::OnTestStart(const ::testing::TestInfo &test_info) {
 	// NOP
 	fprintf(stdout, "OnTestStart\n");
+	GoogletestHdl::inst().OnTestStart();
 	m_num_tests++;
 }
 
