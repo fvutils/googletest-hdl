@@ -45,6 +45,11 @@ void GoogletestHdl::init(int argc, char **argv, IEngine *engine) {
 	m_inst.m_clp.init(argc, argv);
 	m_inst.m_engine = engine;
 
+	if (m_inst.m_engine) {
+		fprintf(stdout, "INIT\n");
+		m_inst.m_engine->init();
+	}
+
 	GoogletestHdlTestListener *l = new GoogletestHdlTestListener(&m_inst);
 	// Register ourselves as a listener
 	::testing::TestEventListeners &listeners =

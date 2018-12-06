@@ -18,7 +18,8 @@
 #include "verilated_lxt2_c.h"
 #include "gtest/gtest.h"
 #include <unistd.h>
-#include "../CmdlineProcessor.h"
+#include "CmdlineProcessor.h"
+#include "GvmException.h"
 
 int main(int argc, char **argv) {
 	bool trace = true;
@@ -66,7 +67,16 @@ int main(int argc, char **argv) {
 		::testing::GTEST_FLAG(filter) = filter.c_str();
 	}
 
-	int ret = RUN_ALL_TESTS();
+	int ret = -1;
+	bool exception = false;
+	std::string msg;
+
+	try {
+		ret = RUN_ALL_TESTS();
+	} catch (GvmException &e) {
+		exception = true;
+		msg = e.msg();
+	}
 
 	std::string testname = "UNSPECIFIED";
 	if (!clp.get_plusarg_value("+TESTNAME", testname)) {
@@ -75,7 +85,9 @@ int main(int argc, char **argv) {
 
 	GoogletestHdl &inst = GoogletestHdl::inst();
 
-	if (inst.num_passed() && inst.num_failed() == 0) {
+	if (exception) {
+		fprintf(stdout, "FAILED: %s (exception: %s)\n", testname.c_str(), msg.c_str());
+	} else if (inst.num_passed() && inst.num_failed() == 0) {
 		fprintf(stdout, "PASSED: %s\n", testname.c_str());
 	} else if (inst.num_failed()) {
 		fprintf(stdout, "FAILED: %s (%d errors)\n", testname.c_str(), inst.num_failed());

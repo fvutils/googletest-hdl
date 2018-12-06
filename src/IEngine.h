@@ -14,6 +14,12 @@ public:
 
 	virtual ~IEngine() { }
 
+	/**
+	 * Initialize the environment, allowing any time-0
+	 * registrations to occur
+	 */
+	virtual void init() = 0;
+
 	virtual void run() = 0;
 
 	virtual void raiseObjection() = 0;

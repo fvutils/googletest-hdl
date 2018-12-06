@@ -24,6 +24,8 @@ public:
 
 	void addClock(CData &clk, double period);
 
+	virtual void init();
+
 	virtual void run();
 
 	virtual void raiseObjection();

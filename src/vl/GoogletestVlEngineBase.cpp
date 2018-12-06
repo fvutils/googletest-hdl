@@ -22,6 +22,10 @@ void GoogletestVlEngineBase::addClock(CData &clk, double period) {
 	m_clocks.push_back(std::pair<CData *, double>(&clk, period));
 }
 
+void GoogletestVlEngineBase::init() {
+	eval();
+}
+
 void GoogletestVlEngineBase::run() {
 	fprintf(stdout, "GoogletestVlTestBase::run\n");
 	fflush(stdout);
