@@ -17,6 +17,10 @@ GoogletestSvEngine::~GoogletestSvEngine() {
 	// TODO Auto-generated destructor stub
 }
 
+void GoogletestSvEngine::init() {
+	googletest_sv_init();
+}
+
 void GoogletestSvEngine::run() {
 	googletest_sv_run();
 }

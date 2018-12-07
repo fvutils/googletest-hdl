@@ -9,12 +9,6 @@
  */
 package googletest_sv_pkg;
 	
-	import "DPI-C" context function int _googletest_sv_init();
-	int _init = _googletest_sv_init();
-	
-	import "DPI-C" function void _googletest_sv_set_test_filter(string filter);
-	
-	import "DPI-C" context task _googletest_sv_main();
 
 	int						prv_objections = 0;
 	event					prv_objections_e;
@@ -66,6 +60,13 @@ package googletest_sv_pkg;
 	import "DPI-C" context function int _googletest_sv_num_tests();
 	import "DPI-C" context function int _googletest_sv_num_passed();
 	import "DPI-C" context function int _googletest_sv_num_failed();
+	
+	task automatic _googletest_sv_init();
+		repeat (10) begin
+			#0;
+		end
+	endtask
+	export "DPI-C" task _googletest_sv_init;
 
 	/**
 	 * Task: run_all_tests
@@ -97,6 +98,7 @@ package googletest_sv_pkg;
 		end
 		$finish();
 	endtask
+	import "DPI-C" context task _googletest_sv_main();
 
 endpackage
 

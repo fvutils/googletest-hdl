@@ -16,6 +16,8 @@ public:
 
 	virtual ~GoogletestSvEngine();
 
+	virtual void init();
+
 	virtual void run();
 
 	virtual void raiseObjection();

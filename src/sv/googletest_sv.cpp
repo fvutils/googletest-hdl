@@ -29,6 +29,7 @@ typedef enum {
 } googletest_sv_msg_t;
 
 void _googletest_sv_report(const char *msg, int t);
+int _googletest_sv_init(void);
 int _googletest_sv_run(void);
 int _googletest_sv_raise_objection(void);
 int _googletest_sv_drop_objection(void);
@@ -122,17 +123,16 @@ private:
 extern "C" int acc_fetch_argc(void);
 extern "C" char **acc_fetch_argv(void);
 
-int _googletest_sv_init(void) {
-	fprintf(stdout, "--> googletest_init\n");
-	prv_scope = svGetScope();
-
-	fprintf(stdout, "<-- googletest_init %p\n", prv_scope);
-	return 0;
-}
-
 void _googletest_sv_set_test_filter(const char *filter) {
 	prv_filter = filter;
 	::testing::GTEST_FLAG(filter) = prv_filter.c_str();
+}
+
+void googletest_sv_init() {
+	svSetScope(prv_scope);
+	if (!_googletest_sv_init()) {
+		// TODO:
+	}
 }
 
 void googletest_sv_run(double time_ns) {
@@ -167,6 +167,10 @@ int _googletest_sv_main(void) {
 	GoogletestSvEngine		*engine = new GoogletestSvEngine();
 
 	fprintf(stdout, "googletest_sv_main()\n");
+
+	// Capture the scope
+	prv_scope = svGetScope();
+
 
 	testing::InitGoogleTest(&argc, argv);
 
