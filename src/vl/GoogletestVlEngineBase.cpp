@@ -11,7 +11,7 @@ GoogletestVlEngineBase::GoogletestVlEngineBase() {
 	m_timestamp = 0;
 	m_init = false;
 	m_objections = 0;
-	m_tfp = 0; // TODO:
+	m_tfp = 0;
 }
 
 GoogletestVlEngineBase::~GoogletestVlEngineBase() {
@@ -22,7 +22,7 @@ void GoogletestVlEngineBase::addClock(CData &clk, double period) {
 	m_clocks.push_back(std::pair<CData *, double>(&clk, period));
 }
 
-void GoogletestVlEngineBase::init() {
+void GoogletestVlEngineBase::init(const ICmdlineProcessor &clp) {
 	eval();
 }
 
@@ -43,6 +43,7 @@ void GoogletestVlEngineBase::run() {
 		const ClockStep &s = m_steplist.at(m_steplist_idx);
 		*s.clock = s.clock_val;
 		eval();
+
 		if (m_tfp) {
 			m_tfp->dump(m_timestamp);
 		}
@@ -76,6 +77,12 @@ void GoogletestVlEngineBase::dropObjection() {
 
 double GoogletestVlEngineBase::simtime() {
 	return m_timestamp;
+}
+
+void GoogletestVlEngineBase::close() {
+	if (m_tfp) {
+		m_tfp->close();
+	}
 }
 
 uint32_t									GoogletestVlEngineBase::m_engine_base;

@@ -9,6 +9,8 @@
 #define INCLUDED_IENGINE_H
 
 namespace gtest_hdl {
+class ICmdlineProcessor;
+
 class IEngine {
 public:
 
@@ -18,7 +20,7 @@ public:
 	 * Initialize the environment, allowing any time-0
 	 * registrations to occur
 	 */
-	virtual void init() = 0;
+	virtual void init(const ICmdlineProcessor &clp) = 0;
 
 	virtual void run() = 0;
 
@@ -27,6 +29,8 @@ public:
 	virtual void dropObjection() = 0;
 
 	virtual double simtime() = 0;
+
+	virtual void close() = 0;
 
 //	virtual std::string testname() const = 0;
 

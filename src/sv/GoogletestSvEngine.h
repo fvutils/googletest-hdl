@@ -10,13 +10,17 @@
 #include "gtest/gtest.h"
 #include "IEngine.h"
 
+namespace gtest_hdl {
+class ICmdlineProcessor;
+}
+
 class GoogletestSvEngine : public virtual gtest_hdl::IEngine {
 public:
 	GoogletestSvEngine();
 
 	virtual ~GoogletestSvEngine();
 
-	virtual void init();
+	virtual void init(const gtest_hdl::ICmdlineProcessor &clp);
 
 	virtual void run();
 
@@ -25,6 +29,8 @@ public:
 	virtual void dropObjection();
 
 	virtual double simtime();
+
+	virtual void close();
 
 };
 

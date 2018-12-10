@@ -9,6 +9,7 @@
 #define INCLUDED_GOOGLETEST_VL_ENGINE_H
 #include "GoogletestVlEngineFactory.h"
 #include "GoogletestVlEngineBase.h"
+#include "ICmdlineProcessor.h"
 #include <stdio.h>
 
 using namespace gtest_hdl;
@@ -23,6 +24,8 @@ public:
 	virtual ~GoogletestVlEngine() { }
 
 protected:
+
+	virtual void init(const ICmdlineProcessor &clp);
 
 	virtual void eval() { m_top->eval(); m_var++; }
 
@@ -44,6 +47,16 @@ uint32_t var_init() {
 	fflush(stdout);
 
 	return 25;
+}
+
+template <class T> void GoogletestVlEngine<T>::init(const ICmdlineProcessor &clp) {
+	if (clp.has_plusarg("+debug")) {
+		m_tfp = new VerilatedLxt2C();
+		m_top->trace(m_tfp, 99);
+		m_tfp->open("simx.lxt");
+	}
+
+	GoogletestVlEngineBase::init(clp);
 }
 
 template <class T> GoogletestVlEngineFactory<T> 	GoogletestVlEngine<T>::m_factory;

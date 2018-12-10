@@ -66,6 +66,9 @@ bool CmdlineProcessor::get_plusarg_value(const std::string &plusarg, std::string
 
 bool CmdlineProcessor::has_plusarg(const std::string &plusarg) const {
 
+	fprintf(stdout, "--> has_plusarg: %s\n", plusarg.c_str());
+	fflush(stdout);
+
 	for (std::vector<std::string>::const_iterator it=m_plusargs.begin();
 			it!=m_plusargs.end(); it++) {
 		if ((*it) == plusarg) {
@@ -73,6 +76,8 @@ bool CmdlineProcessor::has_plusarg(const std::string &plusarg) const {
 		}
 	}
 
+	fprintf(stdout, "<-- has_plusarg: %s\n", plusarg.c_str());
+	fflush(stdout);
 	return false;
 }
 

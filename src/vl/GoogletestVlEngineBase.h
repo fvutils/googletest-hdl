@@ -8,6 +8,7 @@
 #ifndef PACKAGES_GOOGLETEST_HDL_SRC_VL_GOOGLETESTVLENGINEBASE_H_
 #define PACKAGES_GOOGLETEST_HDL_SRC_VL_GOOGLETESTVLENGINEBASE_H_
 #include "IEngine.h"
+#include "ICmdlineProcessor.h"
 #include <vector>
 #include <stdint.h>
 #include "gtest/gtest.h"
@@ -15,6 +16,8 @@
 #include "verilated_lxt2_c.h"
 #include <stdint.h>
 #include <map>
+
+using namespace gtest_hdl;
 
 class GoogletestVlEngineBase : public virtual gtest_hdl::IEngine {
 public:
@@ -24,7 +27,7 @@ public:
 
 	void addClock(CData &clk, double period);
 
-	virtual void init();
+	virtual void init(const ICmdlineProcessor &clp);
 
 	virtual void run();
 
@@ -34,13 +37,15 @@ public:
 
 	virtual double simtime();
 
+	virtual void close();
+
 protected:
 
 	virtual void eval() = 0;
 
 	virtual void trace() = 0;
 
-private:
+protected:
 
 	struct ClockStep {
 		CData			*clock;
@@ -54,7 +59,7 @@ private:
 		}
 	};
 
-private:
+protected:
 	VerilatedLxt2C 									*m_tfp;
 	bool											m_init;
 	std::vector<std::pair<CData *, double>>			m_clocks;

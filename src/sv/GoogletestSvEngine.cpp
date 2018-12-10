@@ -17,7 +17,7 @@ GoogletestSvEngine::~GoogletestSvEngine() {
 	// TODO Auto-generated destructor stub
 }
 
-void GoogletestSvEngine::init() {
+void GoogletestSvEngine::init(const gtest_hdl::ICmdlineProcessor &clp) {
 	googletest_sv_init();
 }
 
@@ -39,4 +39,8 @@ void GoogletestSvEngine::dropObjection() {
 
 double GoogletestSvEngine::simtime() {
 	return 0.0; // TODO:
+}
+
+void GoogletestSvEngine::close() {
+
 }

@@ -47,7 +47,8 @@ void GoogletestHdl::init(int argc, char **argv, IEngine *engine) {
 
 	if (m_inst.m_engine) {
 		fprintf(stdout, "INIT\n");
-		m_inst.m_engine->init();
+		fflush(stdout);
+		m_inst.m_engine->init(m_inst.m_clp);
 	}
 
 	GoogletestHdlTestListener *l = new GoogletestHdlTestListener(&m_inst);

@@ -78,6 +78,8 @@ int main(int argc, char **argv) {
 		msg = e.msg();
 	}
 
+	engine->close();
+
 	std::string testname = "UNSPECIFIED";
 	if (!clp.get_plusarg_value("+TESTNAME", testname)) {
 		fprintf(stdout, "Error: +TESTNAME not specified\n");

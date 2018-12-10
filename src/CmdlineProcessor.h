@@ -9,9 +9,10 @@
 #define INCLUDED_GOOGLETEST_HDL_CMDLINE_PROCESSOR
 #include <vector>
 #include <string>
+#include "ICmdlineProcessor.h"
 
 namespace gtest_hdl {
-class CmdlineProcessor {
+class CmdlineProcessor : public virtual ICmdlineProcessor {
 public:
 	CmdlineProcessor();
 
@@ -21,18 +22,18 @@ public:
 
 	void init(int argc, char **argv);
 
-	const std::vector<std::string> &get_args() const { return m_args; }
+	virtual const std::vector<std::string> &get_args() const { return m_args; }
 
-	const std::vector<std::string> &get_plusargs() const { return m_plusargs; }
+	virtual const std::vector<std::string> &get_plusargs() const { return m_plusargs; }
 
 	// Returns all plusargs that match the specified plusarg
 	// plusarg="+OPTION" => returns all
-	bool get_plusarg_values(const std::string &plusarg, std::vector<std::string> &values) const;
+	virtual bool get_plusarg_values(const std::string &plusarg, std::vector<std::string> &values) const;
 
 	// Returns the first plusarg that matches the specified
-	bool get_plusarg_value(const std::string &plusarg, std::string &value) const;
+	virtual bool get_plusarg_value(const std::string &plusarg, std::string &value) const;
 
-	bool has_plusarg(const std::string &plusarg) const;
+	virtual bool has_plusarg(const std::string &plusarg) const;
 
 protected:
 
