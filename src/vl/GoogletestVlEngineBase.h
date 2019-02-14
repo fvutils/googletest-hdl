@@ -4,16 +4,15 @@
  *  Created on: Dec 2, 2018
  *      Author: ballance
  */
-
-#ifndef PACKAGES_GOOGLETEST_HDL_SRC_VL_GOOGLETESTVLENGINEBASE_H_
-#define PACKAGES_GOOGLETEST_HDL_SRC_VL_GOOGLETESTVLENGINEBASE_H_
+#pragma once
 #include "IEngine.h"
 #include "ICmdlineProcessor.h"
+#include "GvmVlThread.h"
 #include <vector>
 #include <stdint.h>
 #include "gtest/gtest.h"
 #include "verilated.h"
-#include "verilated_lxt2_c.h"
+#include "verilated_fst_c.h"
 #include <stdint.h>
 #include <map>
 
@@ -39,11 +38,40 @@ public:
 
 	virtual void close();
 
+	/**
+	 * Return the current context (ie DPI scope)
+	 */
+	virtual void *getContext();
+
+	/**
+	 * Set the active context (ie DPI scope)
+	 */
+	virtual void setContext(void *ctxt);
+
+	// Create a new thread
+	virtual GvmThread *createThread();
+
+	// Return the currently-active thread
+	virtual GvmThread *activeThread();
+
+	// Block the specified thread
+	virtual void blockThread(GvmThread *t);
+
+	// Unblock the specified thread
+	virtual void unblockThread(GvmThread *t);
+
+	// Yield the active thread
+	virtual void yieldThread();
+
 protected:
 
 	virtual void eval() = 0;
 
 	virtual void trace() = 0;
+
+	void init();
+
+	void cycle();
 
 protected:
 
@@ -60,16 +88,21 @@ protected:
 	};
 
 protected:
-	VerilatedLxt2C 									*m_tfp;
+	VerilatedFstC 									*m_tfp;
+	GvmVlThread										m_main_thread;
+	GvmVlThread										*m_active_thread;
+	std::vector<GvmVlThread *>						m_runnable_threads;
+	std::vector<GvmVlThread *>						m_blocked_threads;
 	bool											m_init;
 	std::vector<std::pair<CData *, double>>			m_clocks;
 	std::vector<ClockStep>							m_steplist;
 	uint32_t										m_steplist_idx;
 	uint32_t										m_steplist_sz;
 	double											m_timestamp;
+	double											m_timeout;
 	uint32_t										m_objections;
 
 	static uint32_t									m_engine_base;
 };
 
-#endif /* PACKAGES_GOOGLETEST_HDL_SRC_VL_GOOGLETESTVLENGINEBASE_H_ */
+

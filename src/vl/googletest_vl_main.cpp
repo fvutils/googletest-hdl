@@ -15,7 +15,7 @@
 #include "GoogletestVlEngineRegistry.h"
 #include "FilelistParser.h"
 #include "verilated.h"
-#include "verilated_lxt2_c.h"
+#include "verilated_fst_c.h"
 #include "gtest/gtest.h"
 #include <unistd.h>
 #include "CmdlineProcessor.h"

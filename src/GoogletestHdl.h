@@ -12,8 +12,9 @@
 #include "CmdlineProcessor.h"
 #include "IEngine.h"
 
-
 using namespace gtest_hdl;
+
+class GvmThread;
 class GoogletestHdl : public ::testing::EmptyTestEventListener {
 	friend class GoogletestHdlTestListener;
 public:
@@ -54,6 +55,12 @@ public:
 	static void run();
 
 	static void dropObjection();
+
+	static void *getContext();
+
+	static void setContext(void *ctxt);
+
+	static GvmThread *activeThread();
 
 //	static void TearDown();
 

@@ -51,9 +51,9 @@ uint32_t var_init() {
 
 template <class T> void GoogletestVlEngine<T>::init(const ICmdlineProcessor &clp) {
 	if (clp.has_plusarg("+debug")) {
-		m_tfp = new VerilatedLxt2C();
+		m_tfp = new VerilatedFstC();
 		m_top->trace(m_tfp, 99);
-		m_tfp->open("simx.lxt");
+		m_tfp->open("simx.fst");
 	}
 
 	GoogletestVlEngineBase::init(clp);
