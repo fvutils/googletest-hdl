@@ -9,6 +9,14 @@
 #include "GvmTimeoutException.h"
 #include <stdio.h>
 
+#undef DEBUG_EN
+
+#ifdef DEBUG_EN
+#define debug(...) fprintf(stdout, __VA_ARGS__) ; fflush(stdout)
+#else
+#define debug(...)
+#endif
+
 GoogletestVlEngineBase::GoogletestVlEngineBase() : m_main_thread(this) {
 	m_timestamp = 0;
 	m_timeout = 10000; // 1000ns
@@ -33,15 +41,14 @@ void GoogletestVlEngineBase::init(const ICmdlineProcessor &clp) {
 }
 
 void GoogletestVlEngineBase::run() {
-	fprintf(stdout, "GoogletestVlTestBase::run\n");
-	fflush(stdout);
+	debug("GoogletestVlTestBase::run\n");
 
 
 	while (true) {
 		cycle();
 
 		if (m_objections == 0) {
-			fprintf(stdout, "No objections\n");
+			debug("No objections\n");
 			break;
 		}
 	}
@@ -133,8 +140,7 @@ GvmThread *GoogletestVlEngineBase::activeThread() {
 
 // Block the specified thread
 void GoogletestVlEngineBase::blockThread(GvmThread *t) {
-	fprintf(stdout, "--> blockThread\n");
-	fflush(stdout);
+	debug("--> blockThread\n");
 	// Remove this thread from the runnable list
 	for (std::vector<GvmVlThread *>::iterator it=m_runnable_threads.begin();
 			it!=m_runnable_threads.end(); it++) {
@@ -151,20 +157,18 @@ void GoogletestVlEngineBase::blockThread(GvmThread *t) {
 	if (t == m_active_thread) {
 		// We need to block *this* thread
 		while (m_runnable_threads.size() == 0) {
-			fprintf(stdout, "--> cycle\n");
+			debug("--> cycle\n");
 			cycle();
-			fprintf(stdout, "<-- cycle\n");
+			debug("<-- cycle\n");
 		}
 	}
 	// Otherwise, just return
-	fprintf(stdout, "<-- blockThread\n");
-	fflush(stdout);
+	debug("<-- blockThread\n");
 }
 
 // Unblock the specified thread
 void GoogletestVlEngineBase::unblockThread(GvmThread *t) {
-	fprintf(stdout, "--> unblockThread\n");
-	fflush(stdout);
+	debug("--> unblockThread\n");
 	// Remove this thread from the suspended list
 	for (std::vector<GvmVlThread *>::iterator it=m_blocked_threads.begin();
 			it!=m_blocked_threads.end(); it++) {
@@ -178,8 +182,7 @@ void GoogletestVlEngineBase::unblockThread(GvmThread *t) {
 	m_runnable_threads.push_back(static_cast<GvmVlThread *>(t));
 
 	// Anything else?
-	fprintf(stdout, "<-- unblockThread\n");
-	fflush(stdout);
+	debug("<-- unblockThread\n");
 }
 
 // Yield the active thread
