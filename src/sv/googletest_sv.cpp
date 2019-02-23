@@ -160,6 +160,11 @@ void googletest_sv_drop_objection(void) {
 	fflush(stdout);
 }
 
+/********************************************************************
+ * _googletest_sv_main()
+ *
+ * Main routine called from the simulation to run a GoogleTest
+ ********************************************************************/
 int _googletest_sv_main(void) {
 	int argc = acc_fetch_argc();
 	char **argv = acc_fetch_argv();

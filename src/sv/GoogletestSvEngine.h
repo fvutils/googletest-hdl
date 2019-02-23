@@ -5,10 +5,11 @@
  *      Author: ballance
  */
 
-#ifndef INCLUDED_GOOGLETEST_HDL_TEST_BASE_H
-#define INCLUDED_GOOGLETEST_HDL_TEST_BASE_H
+#pragma once
 #include "gtest/gtest.h"
 #include "IEngine.h"
+#include "GvmSvThread.h"
+
 
 namespace gtest_hdl {
 class ICmdlineProcessor;
@@ -32,6 +33,36 @@ public:
 
 	virtual void close();
 
+	/**
+	 * Return the current context (ie DPI scope)
+	 */
+	virtual void *getContext();
+
+	/**
+	 * Set the active context (ie DPI scope)
+	 */
+	virtual void setContext(void *ctxt);
+
+	// Create a new thread
+	virtual GvmThread *createThread();
+
+	// Return the currently-active thread
+	virtual GvmThread *activeThread();
+
+	// Block the specified thread
+	virtual void blockThread(GvmThread *t);
+
+	// Unblock the specified thread
+	virtual void unblockThread(GvmThread *t);
+
+	// Yield the active thread
+	virtual void yieldThread();
+
+private:
+	void					*m_main_ctxt;
+	GvmSvThread				m_main_thread;
+	GvmSvThread				*m_active_thread;
+
+
 };
 
-#endif /* INCLUDED_GOOGLETEST_HDL_TEST_BASE_H */

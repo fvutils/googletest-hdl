@@ -8,10 +8,13 @@
  * TODO: Add package documentation
  */
 package googletest_sv_pkg;
-	
+	typedef class gvm_thread;
 
 	int						prv_objections = 0;
 	event					prv_objections_e;
+	gvm_thread				prv_proc2thread_map[process];
+	gvm_thread				prv_ch2thread_map[chandle];
+	
 	
 	task automatic _googletest_sv_raise_objection();
 		prv_objections++;
@@ -99,6 +102,67 @@ package googletest_sv_pkg;
 		$finish();
 	endtask
 	import "DPI-C" context task _googletest_sv_main();
+	
+	function automatic void _registerThread(chandle thread);
+		gvm_thread t = new(process::self(), thread);
+		prv_ch2thread_map[thread] = t;
+		prv_proc2thread_map[process::self()] = t;
+	endfunction
+	export "DPI-C" function _registerThread;
+	
+	task automatic _blockThread(chandle thread);
+		gvm_thread t = prv_ch2thread_map[thread];
+		t.blockThread();
+	endtask
+	export "DPI-C" task _blockThread;
+	
+	task automatic _unblockThread(chandle thread);
+		gvm_thread t = prv_ch2thread_map[thread];
+		t.unblockThread();
+	endtask
+	export "DPI-C" task _unblockThread;
+	
+	task automatic _yieldThread();
+		// Just sleep for a bit
+		#0;
+	endtask
+	export "DPI-C" task _yieldThread;
+	
+	class gvm_thread;
+		bit						m_running = 1;
+		semaphore				m_block_sem = new(0);
+		process					m_process;
+		chandle					m_thread_h;
+		
+		function new(process p, chandle gvm_thread_h);
+			m_process = p;
+			m_thread_h = gvm_thread_h;
+		endfunction
+		
+		task blockThread();
+			process active = process::self();
+			gvm_thread at = prv_proc2thread_map[active];
+			
+			m_running = 0;
+
+			if (active == m_process) begin
+				$display("--> blocking active thread");
+				m_block_sem.get(1);
+				m_running = 1;
+				$display("<-- blocking active thread");
+			end else begin
+				$display("TODO: block non-active thread");
+			end
+		endtask
+		
+		task unblockThread();
+			if (!m_running) begin
+				m_running = 1;
+				m_block_sem.put(1);
+			end
+		endtask
+		
+	endclass
 
 endpackage
 

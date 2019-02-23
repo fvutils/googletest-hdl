@@ -91,7 +91,9 @@ uint32_t GvmBfmTypeBase::add_bfm(const std::string &path, GvmBfmBase *bfm) {
 	}
 
 	// Configure the BFM with its instance name and calling context
+	fprintf(stdout, "--> calling init bfm=%p\n", bfm);
 	bfm->init(path, GoogletestHdl::getContext());
+	fprintf(stdout, "<-- calling init\n");
 
 	return ret;
 }

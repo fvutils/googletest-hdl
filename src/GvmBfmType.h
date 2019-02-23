@@ -45,7 +45,9 @@ template <class T> uint32_t GvmBfmType<T>::register_bfm(const std::string &path)
 	if (!m_type) {
 		fprintf(stdout, "Fatal: missing BFM instantiation\n");
 	}
+	fprintf(stdout, "--> calling add_bfm\n");
 	uint32_t ret = m_type->add_bfm(path, bfm);
+	fprintf(stdout, "<-- calling add_bfm\n");
 
 	return ret;
 

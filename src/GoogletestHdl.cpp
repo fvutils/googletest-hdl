@@ -104,14 +104,6 @@ void GoogletestHdl::dropObjection() {
 	fflush(stdout);
 }
 
-void *GoogletestHdl::getContext() {
-	return inst().m_engine->getContext();
-}
-
-void GoogletestHdl::setContext(void *ctxt) {
-	inst().m_engine->setContext(ctxt);
-}
-
 GvmThread *GoogletestHdl::activeThread() {
 	return inst().m_engine->activeThread();
 }

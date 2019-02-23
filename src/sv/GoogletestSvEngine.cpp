@@ -7,10 +7,23 @@
 
 #include "googletest_sv.h"
 #include "GoogletestSvEngine.h"
+#include <stdio.h>
 
-GoogletestSvEngine::GoogletestSvEngine() {
-	// TODO Auto-generated constructor stub
+extern "C" {
+void *svGetScope();
+void svSetScope(void *);
+int _blockThread(void *thread);
+int _unblockThread(void *thread);
+int _yieldThread();
+void _registerThread(void *thread);
+}
 
+GoogletestSvEngine::GoogletestSvEngine() : m_main_thread(this) {
+	m_active_thread = &m_main_thread;
+	m_main_ctxt = getContext();
+
+	// Register the main thread with the SV side
+	_registerThread(&m_main_thread);
 }
 
 GoogletestSvEngine::~GoogletestSvEngine() {
@@ -30,11 +43,7 @@ void GoogletestSvEngine::raiseObjection() {
 }
 
 void GoogletestSvEngine::dropObjection() {
-	fprintf(stdout, "--> SvEngine::dropObjection\n");
-	fflush(stdout);
 	googletest_sv_drop_objection();
-	fprintf(stdout, "<-- SvEngine::dropObjection\n");
-	fflush(stdout);
 }
 
 double GoogletestSvEngine::simtime() {
@@ -44,3 +53,50 @@ double GoogletestSvEngine::simtime() {
 void GoogletestSvEngine::close() {
 
 }
+
+/**
+ * Return the current context (ie DPI scope)
+ */
+void *GoogletestSvEngine::getContext() {
+	return svGetScope();
+}
+
+/**
+ * Set the active context (ie DPI scope)
+ */
+void GoogletestSvEngine::setContext(void *ctxt) {
+	svSetScope(ctxt);
+}
+
+// Create a new thread
+GvmThread *GoogletestSvEngine::createThread() {
+	// TODO:
+	return 0;
+}
+
+// Return the currently-active thread
+GvmThread *GoogletestSvEngine::activeThread() {
+	return m_active_thread;
+}
+
+// Block the specified thread
+void GoogletestSvEngine::blockThread(GvmThread *t) {
+	fprintf(stdout, "blockThread\n");
+	setContext(m_main_ctxt);
+	_blockThread(t);
+}
+
+// Unblock the specified thread
+void GoogletestSvEngine::unblockThread(GvmThread *t) {
+	fprintf(stdout, "unblockThread\n");
+	setContext(m_main_ctxt);
+	_unblockThread(t);
+}
+
+// Yield the active thread
+void GoogletestSvEngine::yieldThread() {
+	fprintf(stdout, "yieldThread\n");
+	setContext(m_main_ctxt);
+	_yieldThread();
+}
+
