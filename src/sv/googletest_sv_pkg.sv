@@ -146,10 +146,8 @@ package googletest_sv_pkg;
 			m_running = 0;
 
 			if (active == m_process) begin
-				$display("--> blocking active thread");
 				m_block_sem.get(1);
 				m_running = 1;
-				$display("<-- blocking active thread");
 			end else begin
 				$display("TODO: block non-active thread");
 			end

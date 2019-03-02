@@ -81,14 +81,12 @@ GvmThread *GoogletestSvEngine::activeThread() {
 
 // Block the specified thread
 void GoogletestSvEngine::blockThread(GvmThread *t) {
-	fprintf(stdout, "blockThread\n");
 	setContext(m_main_ctxt);
 	_blockThread(t);
 }
 
 // Unblock the specified thread
 void GoogletestSvEngine::unblockThread(GvmThread *t) {
-	fprintf(stdout, "unblockThread\n");
 	setContext(m_main_ctxt);
 	_unblockThread(t);
 }
