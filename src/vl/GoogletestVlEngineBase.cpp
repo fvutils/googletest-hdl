@@ -19,7 +19,8 @@
 
 GoogletestVlEngineBase::GoogletestVlEngineBase() : m_main_thread(this) {
 	m_timestamp = 0;
-	m_timeout = 10000; // 1000ns
+	m_timeout = 100000000; // 1000ns
+//	m_timeout = 1000000; // 1000ns
 	m_init = false;
 	m_objections = 0;
 	m_tfp = 0;
